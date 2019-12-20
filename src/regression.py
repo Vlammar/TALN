@@ -23,7 +23,7 @@ def readFile(langue):
 
 
 
-from var_exp import getMeanDist,mean_phrase_len
+from var_exp import getMeanDist,mean_phrase_len,getMeanWordLength,getMeanLemmaLength,mean_phrase_len
 def loadExplicativeVariable(path):
     X=[]
 
@@ -32,10 +32,25 @@ def loadExplicativeVariable(path):
         #print(readFile(lg)[:10])
 
         r=readFile(lg)
+
+        #Features:
+        #Longueur moyenne de la chaine de dependance
         xlg.append(getMeanDist(r))
         xlg.append(np.log(getMeanDist(r)))
+
         xlg.append(mean_phrase_len(r))
         xlg.append(np.log(mean_phrase_len(r)))
+
+        xlg.append(getMeanWordLength(r))
+        xlg.append(np.log(getMeanWordLength(r)))
+        xlg.append(getMeanLemmaLength(r))
+        xlg.append(np.log(getMeanLemmaLength(r)))
+
+        xlg.append(mean_phrase_len(r))
+        xlg.append(np.log(mean_phrase_len(r)))
+
+
+
         X.append(xlg)
 
 

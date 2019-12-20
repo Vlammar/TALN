@@ -19,13 +19,33 @@ def getMeanDist(lines):
 	return np.mean(np.abs(dists))
 
 def getMeanWordLength(lines):
-    for l in lines:
-        pass
-    return np.mean(np.abs(res))
+    words=[]
+    for word in lines:
+        words.append(len(str(word[1])))
+        #print(word[1])
+    return np.mean(words)
+def getMeanLemmaLength(lines):
+    words=[]
+    for word in lines:
+        words.append(len(str(word[2])))
+       # print(word[1])
+    return np.mean(words)
 
-def getMeanSentenceLength(lines):
-
-    return np.mean(np.abs(res))
+def getMeanSentenceLength(lines): #nb mots
+    sentences=[]
+    prec=-1
+    sentence=[]
+    for word in lines:
+        #new sentence
+        if("-" in word[0]):
+            continue
+        if(int(word[0])<prec):
+            sentences.append(len(sentence))
+            sentence=[]
+        sentence.append(word[1])
+        prec=int(word[0])
+       # print(word[1])
+    return np.mean(sentences)
 
 
 def reduceToPhrases(lines):
@@ -42,11 +62,11 @@ def reduceToPhrases(lines):
 	return phrases
 
 def mean_phrase_len(lines):
-	phrases = np.array(reduceToPhrases(lines))
-	lengths= []
-	for phrase in phrases:
-		lengths.append(len(phrase))
-	return np.mean(lengths)
+    phrases = np.array(reduceToPhrases(lines))
+    lengths= []
+    for phrase in phrases:
+        lengths.append(len(phrase))
+    return np.mean(lengths)
 
 #def getCrossDependencyCount(langue):
 #	lines = readFile(langue)
