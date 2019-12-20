@@ -10,8 +10,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from var_exp import *
 
-def readFile(langue):
-	datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_test.conllu",
+def readFile(langue,tp):
+	datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_"+tp+".conllu",
 	sep='\t',
 	lineterminator='\n',
 	index_col=False,quotechar=None, quoting=3,
@@ -20,13 +20,14 @@ def readFile(langue):
 	return datas.to_numpy()
 
 
-def loadExplicativeVariable(path):
+def loadExplicativeVariable(path,tp):
 	X=[]
 
 	for lg in langues:
 		xlg=[]
-		#print(readFile(lg)[:10])
-		r=readFile(lg)
+
+		r=readFile(lg,tp)
+
 		#Features:
 		#Longueur moyenne de la chaine de dependance
 		meanDist=getMeanDist(r)
@@ -55,11 +56,31 @@ def loadExplicativeVariable(path):
 
 		charUsed=nbCharUsed(r)
 		xlg.append(charUsed)
-		xlg.append(np.log(charUsed)) 
-		
+		xlg.append(np.log(charUsed))
+
 		POSambiguity=usePOSamb(r)
 		xlg.append(POSambiguity)
 		xlg.append(np.log(POSambiguity))
+
+
+		wQuartile=wordQuartile(r)
+
+		for q in wQuartile:
+			xlg.append(q)
+			xlg.append(np.log(q))
+
+		lQuartile=lemmaQuartile(r)
+
+		for q in lQuartile:
+			xlg.append(q)
+			xlg.append(np.log(q))
+
+		sQuartile=sentenceQuartile(r)
+
+		for s in sQuartile:
+			xlg.append(s)
+			xlg.append(np.log(s))
+
 
 		X.append(xlg)
 
@@ -113,17 +134,43 @@ for label,unlabel in y.values():
 	Y_LAS.append(label)
 	Y_UAS.append(unlabel)
 
-X=loadExplicativeVariable("../corpus_equilibre")
+
+X=loadExplicativeVariable("../corpus_equilibre","test")
+
 print(X)
 reg = LinearRegression().fit(X, Y_LAS)
 print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
 print(*reg.coef_)
 print(reg.intercept_)
 
-
 plt.plot(np.arange(36),Y_LAS,'o')
 plt.plot(np.arange(36),reg.predict(X),'o')
 plt.legend(["true","pred"])
 plt.show()
+
+
+
+
+#Xtrain=loadExplicativeVariable("../corpus_equilibre","train")
+
+#Xtest=loadExplicativeVariable("../corpus_equilibre","test")
+
+#print(Xtrain)
+#reg = LinearRegression().fit(Xtrain, Y_LAS)
+#print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(Xtrain))))
+#print("LinearRegression score r2 {}".format(r2_score(Y_UAS, reg.predict(Xtest))))
+#print(*reg.coef_)
+#print(reg.intercept_)
+
+#plt.plot(np.arange(36),Y_LAS,'o')
+#plt.plot(np.arange(36),reg.predict(Xtrain),'o')
+#plt.legend(["true","pred"])
+#plt.show()
+
+
+#plt.plot(np.arange(36),Y_UAS,'o')
+#plt.plot(np.arange(36),reg.predict(Xtest),'o')
+#plt.legend(["true","pred"])
+#plt.show()
 
 

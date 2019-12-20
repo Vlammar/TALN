@@ -89,7 +89,7 @@ def POSambiguity(lines):
 	for l in lines:
 		if l[3] in dic[l[1]]:
 			dic[l[1]][l[3]] +=1
-		else : 
+		else :
 			dic[l[1]][l[3]] =1
 	return dic
 
@@ -100,6 +100,31 @@ def usePOSamb(lines):
 		if len(d[pos])>1:
 			score += len(d[pos])
 	return score/len(lines)
+
+def wordQuartile(lines):
+	words=[]
+	for word in lines:
+		words.append(len(str(word[1])))
+
+
+	return [np.percentile(words, 25, axis=0),np.percentile(words, 50, axis=0),np.percentile(words, 75, axis=0)]
+
+def lemmaQuartile(lines):
+	words=[]
+	for word in lines:
+		words.append(len(str(word[2])))
+
+
+	return [np.percentile(words, 25, axis=0),np.percentile(words, 50, axis=0),np.percentile(words, 75, axis=0)]
+
+def sentenceQuartile(lines):
+	phrases = np.array(reduceToPhrases(lines))
+	lengths= []
+	for phrase in phrases:
+		lengths.append(len(phrase))
+
+
+	return [np.percentile(lengths, 25, axis=0),np.percentile(lengths, 50, axis=0),np.percentile(lengths, 75, axis=0)]
 
 
 #def getCrossDependencyCount(langue):
