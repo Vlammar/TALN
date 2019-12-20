@@ -77,16 +77,22 @@ def nbCharUsed(lines):
 
 def getAllDifferrentFeatures(lines,feature):
 	feat={}
-	words_
 	for w in lines:
-		words[w[feature]]=1
+		feat[w[feature]]=1
+	return feat.keys()
 
 def POSambiguity(lines):
-	
-	for line in lines:
-		
+	words =  getAllDifferrentFeatures(lines,1)
+	dic = {}
+	for w in words:
+		dic[w] = {}
+	for l in lines:
+		if l[3] in dic[l[1]]:
+			dic[l[1]][l[3]] +=1
+		else : 
+			dic[l[1]][l[3]] =1
+	return dic
 
 #def getCrossDependencyCount(langue):
 #	lines = readFile(langue)
-
 #getCrossDependencyCount('fr')
