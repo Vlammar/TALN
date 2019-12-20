@@ -2,7 +2,8 @@
 
 
 import numpy as np
-import matplotlib.pyplot as lt
+import matplotlib.pyplot as plt
+
 import sklearn
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -25,9 +26,7 @@ def loadExplicativeVariable(path):
 	for lg in langues:
 		xlg=[]
 		#print(readFile(lg)[:10])
-
 		r=readFile(lg)
-
 		#Features:
 		#Longueur moyenne de la chaine de dependance
 		meanDist=getMeanDist(r)
@@ -56,9 +55,11 @@ def loadExplicativeVariable(path):
 
 		charUsed=nbCharUsed(r)
 		xlg.append(charUsed)
-		xlg.append(np.log(charUsed))
-
-
+		xlg.append(np.log(charUsed)) 
+		
+		POSambiguity=usePOSamb(r)
+		xlg.append(POSambiguity)
+		xlg.append(np.log(POSambiguity))
 
 		X.append(xlg)
 
@@ -112,18 +113,17 @@ for label,unlabel in y.values():
 	Y_LAS.append(label)
 	Y_UAS.append(unlabel)
 
-#X=loadExplicativeVariable("../corpus_equilibre")
-#print(X)
-#reg = LinearRegression().fit(X, Y_LAS)
-#print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
-#print(*reg.coef_)
-#print(reg.intercept_)
+X=loadExplicativeVariable("../corpus_equilibre")
+print(X)
+reg = LinearRegression().fit(X, Y_LAS)
+print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
+print(*reg.coef_)
+print(reg.intercept_)
 
-#import matplotlib.pyplot as plt
 
-#plt.plot(np.arange(36),Y_LAS,'o')
-#plt.plot(np.arange(36),reg.predict(X),'o')
-#plt.legend(["true","pred"])
-#plt.show()
+plt.plot(np.arange(36),Y_LAS,'o')
+plt.plot(np.arange(36),reg.predict(X),'o')
+plt.legend(["true","pred"])
+plt.show()
 
 

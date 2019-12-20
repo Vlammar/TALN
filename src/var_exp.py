@@ -93,6 +93,15 @@ def POSambiguity(lines):
 			dic[l[1]][l[3]] =1
 	return dic
 
+def usePOSamb(lines):
+	score=0
+	d = POSambiguity(lines)
+	for pos in d:
+		if len(d[pos])>1:
+			score += len(d[pos])
+	return score/len(lines)
+
+
 #def getCrossDependencyCount(langue):
 #	lines = readFile(langue)
 #getCrossDependencyCount('fr')
