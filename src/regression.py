@@ -7,11 +7,7 @@ import sklearn
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-from var_exp import getMeanDist,mean_phrase_len,getMeanWordLength,getMeanLemmaLength,nbWordUsed,nbLemmaUsed,nbCharUsed
-
-
-langues = ['ar','ca','es','fa','ga','hr','it','ko','no','ro','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','da','en','eu','fr','hi','id','nl','pt','sl','tr','vi']
-POS = ['X', 'PUNCT', 'NOUN', 'ADJ', 'VERB', 'NUM', '_', 'ADP', 'PRON', 'CCONJ', 'AUX', 'DET', 'ADV', 'PART', 'PROPN', 'SYM', 'SCONJ', 'INTJ']
+from var_exp import *
 
 def readFile(langue):
     datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_test.conllu",
@@ -129,3 +125,4 @@ for label,unlabel in y.values():
 #plt.plot(np.arange(36),reg.predict(X),'o')
 #plt.legend(["true","pred"])
 #plt.show()
+print(langues)

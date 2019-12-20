@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 
 
-l = ['ar','ca','de','es','fa','ga','hr','it','ko','no','ro','sme','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','bxr','da','en','eu','fr','hi','id','kmr','nl','pt','sl','tr','vi']
-
+langues = ['ar','ca','es','fa','ga','hr','it','ko','no','ro','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','da','en','eu','fr','hi','id','nl','pt','sl','tr','vi']
+POS = ['X', 'PUNCT', 'NOUN', 'ADJ', 'VERB', 'NUM', '_', 'ADP', 'PRON', 'CCONJ', 'AUX', 'DET', 'ADV', 'PART', 'PROPN', 'SYM', 'SCONJ', 'INTJ']
 
 def getDistGouv(lines):
 	res = []
@@ -74,8 +74,9 @@ def nbCharUsed(lines):
         for c in word:
             chars[c]=1
     return len(chars.keys())
+
+
 #def getCrossDependencyCount(langue):
 #	lines = readFile(langue)
 
 #getCrossDependencyCount('fr')
-
