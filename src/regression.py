@@ -10,61 +10,61 @@ from sklearn.metrics import r2_score
 from var_exp import *
 
 def readFile(langue):
-    datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_test.conllu",
-    sep='\t',
-    lineterminator='\n',
-    index_col=False,quotechar=None, quoting=3,
-                    names=["ID1","FORM2","LEMMA3","POS4","EMPTY5","MORPHO6","GOV7","LABEL8", "EMPTY9","EMPTY0","LANG"])
-    #print(datas.columns)
-    return datas.to_numpy()
+	datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_test.conllu",
+	sep='\t',
+	lineterminator='\n',
+	index_col=False,quotechar=None, quoting=3,
+					names=["ID1","FORM2","LEMMA3","POS4","EMPTY5","MORPHO6","GOV7","LABEL8", "EMPTY9","EMPTY0","LANG"])
+	#print(datas.columns)
+	return datas.to_numpy()
 
 
 def loadExplicativeVariable(path):
-    X=[]
+	X=[]
 
-    for lg in langues:
-        xlg=[]
-        #print(readFile(lg)[:10])
+	for lg in langues:
+		xlg=[]
+		#print(readFile(lg)[:10])
 
-        r=readFile(lg)
+		r=readFile(lg)
 
-        #Features:
-        #Longueur moyenne de la chaine de dependance
-        meanDist=getMeanDist(r)
-        xlg.append(meanDist)
-        xlg.append(np.log(meanDist))
+		#Features:
+		#Longueur moyenne de la chaine de dependance
+		meanDist=getMeanDist(r)
+		xlg.append(meanDist)
+		xlg.append(np.log(meanDist))
 
-        meanPhraseLen=mean_phrase_len(r)
-        xlg.append(meanPhraseLen)
-        xlg.append(np.log(meanPhraseLen))
+		meanPhraseLen=mean_phrase_len(r)
+		xlg.append(meanPhraseLen)
+		xlg.append(np.log(meanPhraseLen))
 
-        MeanWordLength=getMeanWordLength(r)
-        xlg.append(MeanWordLength)
-        xlg.append(np.log(MeanWordLength))
+		MeanWordLength=getMeanWordLength(r)
+		xlg.append(MeanWordLength)
+		xlg.append(np.log(MeanWordLength))
 
-        MeanLemmaLength=getMeanLemmaLength(r)
-        xlg.append(MeanLemmaLength)
-        xlg.append(np.log(MeanLemmaLength))
+		MeanLemmaLength=getMeanLemmaLength(r)
+		xlg.append(MeanLemmaLength)
+		xlg.append(np.log(MeanLemmaLength))
 
-        wordUsed=nbWordUsed(r)
-        xlg.append(wordUsed)
-        xlg.append(np.log(wordUsed))
+		wordUsed=nbWordUsed(r)
+		xlg.append(wordUsed)
+		xlg.append(np.log(wordUsed))
 
-        lemmaUsed=nbLemmaUsed(r)
-        xlg.append(lemmaUsed)
-        xlg.append(np.log(lemmaUsed))
+		lemmaUsed=nbLemmaUsed(r)
+		xlg.append(lemmaUsed)
+		xlg.append(np.log(lemmaUsed))
 
-        charUsed=nbCharUsed(r)
-        xlg.append(charUsed)
-        xlg.append(np.log(charUsed))
-
-
-
-        X.append(xlg)
+		charUsed=nbCharUsed(r)
+		xlg.append(charUsed)
+		xlg.append(np.log(charUsed))
 
 
 
-    return np.array(X)
+		X.append(xlg)
+
+
+
+	return np.array(X)
 #INIT dictionnaire avec valeur donnee dans le sujet
 y={}
 y["hi"]=(79.47, 86.80)
@@ -109,8 +109,8 @@ y["tr"]=(47.28, 55.20)
 Y_LAS=[]
 Y_UAS=[]
 for label,unlabel in y.values():
-    Y_LAS.append(label)
-    Y_UAS.append(unlabel)
+	Y_LAS.append(label)
+	Y_UAS.append(unlabel)
 
 #X=loadExplicativeVariable("../corpus_equilibre")
 #print(X)
@@ -125,4 +125,5 @@ for label,unlabel in y.values():
 #plt.plot(np.arange(36),reg.predict(X),'o')
 #plt.legend(["true","pred"])
 #plt.show()
-print(langues)
+
+

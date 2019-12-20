@@ -19,17 +19,17 @@ def getMeanDist(lines):
 	return np.mean(np.abs(dists))
 
 def getMeanWordLength(lines):
-    words=[]
-    for word in lines:
-        words.append(len(str(word[1])))
-        #print(word[1])
-    return np.mean(words)
+	words=[]
+	for word in lines:
+		words.append(len(str(word[1])))
+		#print(word[1])
+	return np.mean(words)
 def getMeanLemmaLength(lines):
-    words=[]
-    for word in lines:
-        words.append(len(str(word[2])))
-       # print(word[1])
-    return np.mean(words)
+	words=[]
+	for word in lines:
+		words.append(len(str(word[2])))
+	   # print(word[1])
+	return np.mean(words)
 
 
 def reduceToPhrases(lines):
@@ -46,35 +46,45 @@ def reduceToPhrases(lines):
 	return phrases
 
 def mean_phrase_len(lines):
-    phrases = np.array(reduceToPhrases(lines))
-    lengths= []
-    for phrase in phrases:
-        lengths.append(len(phrase))
-    return np.mean(lengths)
+	phrases = np.array(reduceToPhrases(lines))
+	lengths= []
+	for phrase in phrases:
+		lengths.append(len(phrase))
+	return np.mean(lengths)
 
 def nbWordUsed(lines):
-    words={}
-    for w in lines:
-        words[w[1]]=1
+	words={}
+	for w in lines:
+		words[w[1]]=1
 
-    return len(words.keys())
+	return len(words.keys())
 
 def nbLemmaUsed(lines):
-    words={}
-    for w in lines:
-        words[w[2]]=1
-    return len(words.keys())
+	words={}
+	for w in lines:
+		words[w[2]]=1
+	return len(words.keys())
 
 def nbCharUsed(lines):
-    chars={}
-    for w in lines:
-        word=w[1]
-        if (isinstance(w[1], float)or isinstance(w[1], int)or(w[1].isdigit())):
-            word=str(w[1])
-        for c in word:
-            chars[c]=1
-    return len(chars.keys())
+	chars={}
+	for w in lines:
+		word=w[1]
+		if (isinstance(w[1], float)or isinstance(w[1], int)or(w[1].isdigit())):
+			word=str(w[1])
+		for c in word:
+			chars[c]=1
+	return len(chars.keys())
 
+def getAllDifferrentFeatures(lines,feature):
+	feat={}
+	words_
+	for w in lines:
+		words[w[feature]]=1
+
+def POSambiguity(lines):
+	
+	for line in lines:
+		
 
 #def getCrossDependencyCount(langue):
 #	lines = readFile(langue)
