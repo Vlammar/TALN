@@ -6,7 +6,10 @@ import matplotlib.pyplot as lt
 import sklearn
 import pandas as pd
 
-langues = ['ar','ca','de','es','fa','ga','hr','it','ko','no','ro','sme','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','bxr','da','en','eu','fr','hi','id','kmr','nl','pt','sl','tr','vi']
+#langues = ['ar','ca','de','es','fa','ga','hr','it','ko','no','ro','sme','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','bxr','da','en','eu','fr','hi','id','kmr','nl','pt','sl','tr','vi']
+langues = ['ar','ca','es','fa','ga','hr','it','ko','no','ro','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','da','en','eu','fr','hi','id','nl','pt','sl','tr','vi']
+#langues = ['de','pl','ru','sv','ur','da','eu','id','nl','pt','sl','vi']
+
 
 def readFile(langue):
     datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_test.conllu",
@@ -17,13 +20,10 @@ def readFile(langue):
     #print(datas.columns)
     return datas.to_numpy()
 
-for lg in langues:
-    print(readFile(lg)[:10])
 
 
 
-
-
+from var_exp import getMeanDist,mean_phrase_len
 def loadExplicativeVariable(path):
     X=[]
 
@@ -32,8 +32,10 @@ def loadExplicativeVariable(path):
         #print(readFile(lg)[:10])
 
         r=readFile(lg)
-        xlg.append()
-
+        xlg.append(getMeanDist(r))
+        xlg.append(np.log(getMeanDist(r)))
+        xlg.append(mean_phrase_len(r))
+        xlg.append(np.log(mean_phrase_len(r)))
         X.append(xlg)
 
 
@@ -87,9 +89,10 @@ for label,unlabel in y.values():
     Y_UAS.append(unlabel)
 
 
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 X=loadExplicativeVariable("../corpus_equilibre")
 print(X)
-clf = LogisticRegression(random_state=0).fit(X, Y_LAS)
-print(r2_score(Y_LAS, clf.pred))
+reg = LinearRegression().fit(X, Y_LAS)
+print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
+

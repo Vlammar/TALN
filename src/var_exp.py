@@ -1,13 +1,12 @@
 #from reg_mul import *
 import pandas as pd
 import numpy as np
-from regression import readFile
+
 
 l = ['ar','ca','de','es','fa','ga','hr','it','ko','no','ro','sme','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','bxr','da','en','eu','fr','hi','id','kmr','nl','pt','sl','tr','vi']
 
 
-def getDistGouv(langue):
-	lines = readFile(langue)
+def getDistGouv(lines):
 	res = []
 	for l in lines:
 		if isinstance(l[0], float) or isinstance(l[0], int) or l[0].isdigit() :
@@ -15,12 +14,22 @@ def getDistGouv(langue):
 				res.append(int(l[0])-int(l[6]))
 	return np.array(res)
 
-def getMeanDist(langue):
-	dists = getDistGouv(langue)
+def getMeanDist(lines):
+	dists = getDistGouv(lines)
 	return np.mean(np.abs(dists))
 
+def getMeanWordLength(lines):
+    for l in lines:
+        pass
+    return np.mean(np.abs(res))
+
+def getMeanSentenceLength(lines):
+
+    return np.mean(np.abs(res))
+
+
 def reduceToPhrases(lines):
-	phrases = []	
+	phrases = []
 	current_phrase = []
 	for l in lines:
 		if not isinstance(l[0], float) and not isinstance(l[0], int) and not l[0].isdigit() :
@@ -32,8 +41,7 @@ def reduceToPhrases(lines):
 		current_phrase.append(l)
 	return phrases
 
-def mean_phrase_len(langue):
-	lines = readFile(langue)
+def mean_phrase_len(lines):
 	phrases = np.array(reduceToPhrases(lines))
 	lengths= []
 	for phrase in phrases:
@@ -44,7 +52,4 @@ def mean_phrase_len(langue):
 #	lines = readFile(langue)
 
 #getCrossDependencyCount('fr')
-for lang in l:
-	print(lang,end=':')
-	print(mean_phrase_len(lang))
-#	print(getMeanDist(lang))
+
