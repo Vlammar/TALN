@@ -23,7 +23,7 @@ def readFile(langue):
 
 
 
-from var_exp import getMeanDist,mean_phrase_len,getMeanWordLength,getMeanLemmaLength,mean_phrase_len
+from var_exp import getMeanDist,mean_phrase_len,getMeanWordLength,getMeanLemmaLength,nbWordUsed,nbLemmaUsed,nbCharUsed
 def loadExplicativeVariable(path):
     X=[]
 
@@ -35,19 +35,33 @@ def loadExplicativeVariable(path):
 
         #Features:
         #Longueur moyenne de la chaine de dependance
-        xlg.append(getMeanDist(r))
-        xlg.append(np.log(getMeanDist(r)))
+        meanDist=getMeanDist(r)
+        xlg.append(meanDist)
+        xlg.append(np.log(meanDist))
 
-        xlg.append(mean_phrase_len(r))
-        xlg.append(np.log(mean_phrase_len(r)))
+        meanPhraseLen=mean_phrase_len(r)
+        xlg.append(meanPhraseLen)
+        xlg.append(np.log(meanPhraseLen))
 
-        xlg.append(getMeanWordLength(r))
-        xlg.append(np.log(getMeanWordLength(r)))
-        xlg.append(getMeanLemmaLength(r))
-        xlg.append(np.log(getMeanLemmaLength(r)))
+        MeanWordLength=getMeanWordLength(r)
+        xlg.append(MeanWordLength)
+        xlg.append(np.log(MeanWordLength))
 
-        xlg.append(mean_phrase_len(r))
-        xlg.append(np.log(mean_phrase_len(r)))
+        MeanLemmaLength=getMeanLemmaLength(r)
+        xlg.append(MeanLemmaLength)
+        xlg.append(np.log(MeanLemmaLength))
+
+        wordUsed=nbWordUsed(r)
+        xlg.append(wordUsed)
+        xlg.append(np.log(wordUsed))
+
+        lemmaUsed=nbLemmaUsed(r)
+        xlg.append(lemmaUsed)
+        xlg.append(np.log(lemmaUsed))
+
+        charUsed=nbCharUsed(r)
+        xlg.append(charUsed)
+        xlg.append(np.log(charUsed))
 
 
 
@@ -110,4 +124,13 @@ X=loadExplicativeVariable("../corpus_equilibre")
 print(X)
 reg = LinearRegression().fit(X, Y_LAS)
 print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
+print(*reg.coef_)
+print(reg.intercept_)
+
+import matplotlib.pyplot as plt
+
+plt.plot(np.arange(36),Y_LAS,'o')
+plt.plot(np.arange(36),reg.predict(X),'o')
+plt.legend(["true","pred"])
+plt.show()
 
