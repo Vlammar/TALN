@@ -5,11 +5,13 @@ import numpy as np
 import matplotlib.pyplot as lt
 import sklearn
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from var_exp import getMeanDist,mean_phrase_len,getMeanWordLength,getMeanLemmaLength,nbWordUsed,nbLemmaUsed,nbCharUsed
 
-#langues = ['ar','ca','de','es','fa','ga','hr','it','ko','no','ro','sme','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','bxr','da','en','eu','fr','hi','id','kmr','nl','pt','sl','tr','vi']
+
 langues = ['ar','ca','es','fa','ga','hr','it','ko','no','ro','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','da','en','eu','fr','hi','id','nl','pt','sl','tr','vi']
-#langues = ['de','pl','ru','sv','ur','da','eu','id','nl','pt','sl','vi']
-
+POS = ['X', 'PUNCT', 'NOUN', 'ADJ', 'VERB', 'NUM', '_', 'ADP', 'PRON', 'CCONJ', 'AUX', 'DET', 'ADV', 'PART', 'PROPN', 'SYM', 'SCONJ', 'INTJ']
 
 def readFile(langue):
     datas = pd.read_csv("../corpus_equilibre/"+langue+"/"+langue+"_test.conllu",
@@ -21,9 +23,6 @@ def readFile(langue):
     return datas.to_numpy()
 
 
-
-
-from var_exp import getMeanDist,mean_phrase_len,getMeanWordLength,getMeanLemmaLength,nbWordUsed,nbLemmaUsed,nbCharUsed
 def loadExplicativeVariable(path):
     X=[]
 
@@ -117,20 +116,16 @@ for label,unlabel in y.values():
     Y_LAS.append(label)
     Y_UAS.append(unlabel)
 
+#X=loadExplicativeVariable("../corpus_equilibre")
+#print(X)
+#reg = LinearRegression().fit(X, Y_LAS)
+#print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
+#print(*reg.coef_)
+#print(reg.intercept_)
 
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
-X=loadExplicativeVariable("../corpus_equilibre")
-print(X)
-reg = LinearRegression().fit(X, Y_LAS)
-print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
-print(*reg.coef_)
-print(reg.intercept_)
+#import matplotlib.pyplot as plt
 
-import matplotlib.pyplot as plt
-
-plt.plot(np.arange(36),Y_LAS,'o')
-plt.plot(np.arange(36),reg.predict(X),'o')
-plt.legend(["true","pred"])
-plt.show()
-
+#plt.plot(np.arange(36),Y_LAS,'o')
+#plt.plot(np.arange(36),reg.predict(X),'o')
+#plt.legend(["true","pred"])
+#plt.show()
