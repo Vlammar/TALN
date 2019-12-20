@@ -143,9 +143,14 @@ print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
 print(*reg.coef_)
 print(reg.intercept_)
 
-plt.plot(np.arange(36),Y_LAS,'o')
-plt.plot(np.arange(36),reg.predict(X),'o')
+plt.plot(langues,Y_LAS,'o')
+plt.plot(langues,reg.predict(X),'o')
+plt.ylabel("LAS scores")
+plt.xlabel("Languages")
+locs, labels = plt.xticks()
+plt.setp(labels, rotation=90)
 plt.legend(["true","pred"])
+plt.title("Comparison of prediction and real values of LAS")
 plt.show()
 
 
