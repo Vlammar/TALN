@@ -5,6 +5,67 @@ import numpy as np
 
 langues = ['ar','ca','es','fa','ga','hr','it','ko','no','ro','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','da','en','eu','fr','hi','id','nl','pt','sl','tr','vi']
 POS = ['X', 'PUNCT', 'NOUN', 'ADJ', 'VERB', 'NUM', '_', 'ADP', 'PRON', 'CCONJ', 'AUX', 'DET', 'ADV', 'PART', 'PROPN', 'SYM', 'SCONJ', 'INTJ']
+names={"ID":0,"FORM":1,"LEMMA":2,"POS":3,"EMPTY":4,"MORPHO":5,"GOV":6,"LABEL":7,"EMPTY_1":8,"EMPTY_2":9,"LANG":-1}
+
+
+#=====================================================================
+#							UTILS
+#=====================================================================
+
+def getPhraseGov(phrase):
+	gov = np.zeros(len(phrase)+1)
+	for word in phrase:
+		wordID = getNumber(word[names["ID"]])
+		wordGOV = getNumber(word[names["GOV"]])
+		if wordID is None or wordGOV is None:
+			continue
+		gov[wordID] = wordGOV
+	return gov
+
+def isANumber(s):
+	return (isinstance(s, float) or isinstance(s, int) or(s.isdigit()))
+
+def getNumber(s):
+	if isANumber(s):
+		return int(s)
+	return None
+
+def getAllDifferrentFeatures(lines,feature):
+	feat={}
+	for w in lines:
+		feat[w[feature]]=1
+	return feat.keys()
+
+def POSambiguity(lines):
+	words =  getAllDifferrentFeatures(lines,1)
+	dic = {}
+	for w in words:
+		dic[w] = {}
+	for l in lines:
+		if l[3] in dic[l[1]]:
+			dic[l[1]][l[3]] +=1
+		else :
+			dic[l[1]][l[3]] =1
+	return dic
+
+
+def reduceToPhrases(lines):
+	phrases = []
+	current_phrase = []
+	for l in lines:
+		if not isinstance(l[0], float) and not isinstance(l[0], int) and not l[0].isdigit() :
+			continue
+		newline = len(current_phrase) != 0 and int(l[0]) < int(current_phrase[-1][0])
+		if newline:
+			phrases.append(current_phrase)
+			current_phrase = []
+		current_phrase.append(l)
+	return phrases
+
+#=====================================================================
+#							FEATURES
+#=====================================================================
+
 
 def getDistGouv(lines):
 	res = []
@@ -13,6 +74,7 @@ def getDistGouv(lines):
 			if isinstance(l[6], float) or isinstance(l[6], int) or l[6].isdigit():
 				res.append(int(l[0])-int(l[6]))
 	return np.array(res)
+
 
 def getMeanDist(lines):
 	dists = getDistGouv(lines)
@@ -31,19 +93,6 @@ def getMeanLemmaLength(lines):
 	   # print(word[1])
 	return np.mean(words)
 
-
-def reduceToPhrases(lines):
-	phrases = []
-	current_phrase = []
-	for l in lines:
-		if not isinstance(l[0], float) and not isinstance(l[0], int) and not l[0].isdigit() :
-			continue
-		newline = len(current_phrase) != 0 and int(l[0]) <= int(current_phrase[-1][0])
-		if newline:
-			phrases.append(current_phrase)
-			current_phrase = []
-		current_phrase.append(l)
-	return phrases
 
 def mean_phrase_len(lines):
 	phrases = np.array(reduceToPhrases(lines))
@@ -75,24 +124,6 @@ def nbCharUsed(lines):
 			chars[c]=1
 	return len(chars.keys())
 
-def getAllDifferrentFeatures(lines,feature):
-	feat={}
-	for w in lines:
-		feat[w[feature]]=1
-	return feat.keys()
-
-def POSambiguity(lines):
-	words =  getAllDifferrentFeatures(lines,1)
-	dic = {}
-	for w in words:
-		dic[w] = {}
-	for l in lines:
-		if l[3] in dic[l[1]]:
-			dic[l[1]][l[3]] +=1
-		else :
-			dic[l[1]][l[3]] =1
-	return dic
-
 def usePOSamb(lines):
 	score=0
 	d = POSambiguity(lines)
@@ -123,10 +154,36 @@ def sentenceQuartile(lines):
 	for phrase in phrases:
 		lengths.append(len(phrase))
 
-
 	return [np.percentile(lengths, 25, axis=0),np.percentile(lengths, 50, axis=0),np.percentile(lengths, 75, axis=0)]
 
+def goUpLeaves(leaves,governors):
+	paths = []
+	for l in leaves:
+		current_pos = l
+		path = [current_pos]
+		g = governors[l]
+		while(g != 0):
+			g = int(governors[current_pos])
+			current_pos = g
+			path.append(current_pos)
+		paths.append(path)
+	return paths
+	
+def getGovernerLinkLength(lines):
+	phrases = np.array(reduceToPhrases(lines))
+	phrase_path_length = []
+	for phrase in phrases:
+		govs = getPhraseGov(phrase)
+		#on cherche toutes les feuilles : toutes celles pas présentes dans la table des gouvs
+		leaves = [ i for i in range(1,len(govs)) if i not in govs]
+		for path in goUpLeaves(leaves,govs):
+			phrase_path_length.append(len(path))
+	return np.mean(phrase_path_length)
 
-#def getCrossDependencyCount(langue):
-#	lines = readFile(langue)
-#getCrossDependencyCount('fr')
+def getCrossGov():
+	phrases = np.array(reduceToPhrases(lines))
+	phrase_path_length = []
+	for phrase in phrases:
+		govs = getPhraseGov(phrase)
+
+
