@@ -27,66 +27,110 @@ def loadExplicativeVariable(path,tp):
 		xlg=[]
 
 		r=readFile(lg,tp)
-
+		names=[]
 		#Features:
 		#Longueur moyenne de la chaine de dependance
 		meanDist=getMeanDist(r)
 		xlg.append(meanDist)
 		xlg.append(np.log(meanDist))
 
+		names.append("meanDist")
+		names.append("log meanDist")
+
+		#Longueur moyenne des phrases
 		meanPhraseLen=mean_phrase_len(r)
 		xlg.append(meanPhraseLen)
 		xlg.append(np.log(meanPhraseLen))
 
+		names.append("mean_phrase_len")
+		names.append("log mean_phrase_len")
+
+		#Longueur moyenne des mots
 		MeanWordLength=getMeanWordLength(r)
 		xlg.append(MeanWordLength)
 		xlg.append(np.log(MeanWordLength))
 
+		names.append("getMeanWordLength")
+		names.append("log getMeanWordLength")
+
+		#Longueur moyenne des lemmes
 		MeanLemmaLength=getMeanLemmaLength(r)
 		xlg.append(MeanLemmaLength)
 		xlg.append(np.log(MeanLemmaLength))
 
+		names.append("getMeanLemmaLength")
+		names.append("log getMeanLemmaLength")
+
+		#Nombre de mots uniques utilises
 		wordUsed=nbWordUsed(r)
 		xlg.append(wordUsed)
 		xlg.append(np.log(wordUsed))
 
+		names.append("nbWordUsed")
+		names.append("log nbWordUsed")
+
+		#Nombre de lemmes uniques utilises
 		lemmaUsed=nbLemmaUsed(r)
 		xlg.append(lemmaUsed)
 		xlg.append(np.log(lemmaUsed))
 
+		names.append("nbLemmaUsed")
+		names.append("log nbLemmaUsed")
+
+		#Nombre de caractere uniques utilises
 		charUsed=nbCharUsed(r)
 		xlg.append(charUsed)
 		xlg.append(np.log(charUsed))
 
+		names.append("nbCharUsed")
+		names.append("log nbCharUsed")
+
+		#Mesure de l'ambiguite d'un part of speech
+		#exemple: will peut etre un verbe et un nom
 		POSambiguity=usePOSamb(r)
 		xlg.append(POSambiguity)
 		xlg.append(np.log(POSambiguity))
 
+		names.append("usePOSamb")
+		names.append("log usePOSamb")
 
+
+		#Quartiles de la longueur des mots
 		wQuartile=wordQuartile(r)
 
 		for q in wQuartile:
 			xlg.append(q)
 			xlg.append(np.log(q))
 
+		names.append("wordQuartile")
+		names.append("log wordQuartile")
+
+		#Quartiles de la longueur des lemmes
 		lQuartile=lemmaQuartile(r)
 
 		for q in lQuartile:
 			xlg.append(q)
 			xlg.append(np.log(q))
 
+		names.append("lQuartile")
+		names.append("log lQuartile")
+
+		#Quartiles de la longueur des phrases
 		sQuartile=sentenceQuartile(r)
 
 		for s in sQuartile:
 			xlg.append(s)
 			xlg.append(np.log(s))
 
+		names.append("sQuartile")
+		names.append("log sQuartile")
+
 
 		X.append(xlg)
 
 
 
-	return np.array(X)
+	return np.array(X),names
 #INIT dictionnaire avec valeur donnee dans le sujet
 y={}
 y["hi"]=(79.47, 86.80)
@@ -135,16 +179,23 @@ for label,unlabel in y.values():
 	Y_UAS.append(unlabel)
 
 
-X=loadExplicativeVariable("../corpus_equilibre","test")
+X,names=loadExplicativeVariable("../corpus_equilibre","test")
 
 print(X)
 reg = LinearRegression().fit(X, Y_LAS)
 print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
-print(*reg.coef_)
-print(reg.intercept_)
+cpt=0
+print("Variable explicative beta associe (ne donne pas l importance d une variable)")
+for coef in reg.coef_[:len(names)]:
 
-plt.plot(langues,Y_LAS,'o')
-plt.plot(langues,reg.predict(X),'o')
+	print("{}  {} : {}".format(cpt,names[cpt],coef))
+	cpt+=1
+
+#print(*reg.coef_)
+#print(reg.intercept_)
+
+plt.plot(list(y.keys()),Y_LAS,'o')
+plt.plot(list(y.keys()),reg.predict(X),'o')
 plt.ylabel("LAS scores")
 plt.xlabel("Languages")
 locs, labels = plt.xticks()
