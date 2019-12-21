@@ -130,7 +130,7 @@ def loadExplicativeVariable(path,tp):
 
 
 
-	return np.array(X),names
+	return np.array(X),np.array(names)
 #INIT dictionnaire avec valeur donnee dans le sujet
 y={}
 y["hi"]=(79.47, 86.80)
@@ -202,6 +202,42 @@ locs, labels = plt.xticks()
 plt.setp(labels, rotation=90)
 plt.legend(["true","pred"])
 plt.title("Comparison of prediction and real values of LAS")
+plt.show()
+
+
+nbvar=len(names)
+deactivatedscore=[]
+y_preds=[]
+#mesure efficacite de chaque var en les retirants
+for var in range(nbvar):
+
+    Xdel=X
+    Xdel=np.delete(Xdel,var,1)
+
+    reg = LinearRegression().fit(Xdel, Y_LAS)
+    print("On retire {}".format(names[var]))
+
+    print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(Xdel))))
+    deactivatedscore.append(r2_score(Y_LAS, reg.predict(Xdel)))
+    y_preds.append(reg.predict(Xdel))
+    cpt=0
+   # print("Variable explicative beta associe (ne donne pas l importance d une variable)")
+   # for coef in reg.coef_[:len(names)]:
+    #    if(cpt==nbvar):
+    #        continue
+        #print("{}  {} : {}".format(cpt,names[cpt],coef))
+     #   cpt+=1
+    print("\n\n")
+
+#mesure pour chaque langue de la distance a la valeur reelle
+y_preds=np.array(y_preds)
+
+for i in range(nbvar):
+    y_pred=y_preds[i]
+    delta=np.absolute(Y_LAS-y_pred)
+
+    plt.subplot(11,2,i+1)
+    plt.plot(langues,delta,'o')
 plt.show()
 
 
