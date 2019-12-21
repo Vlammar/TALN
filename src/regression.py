@@ -3,10 +3,12 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
 
 import sklearn
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.metrics import r2_score
 from var_exp import *
 
@@ -181,8 +183,10 @@ for label,unlabel in y.values():
 
 X,names=loadExplicativeVariable("../corpus_equilibre","test")
 
-print(X)
-reg = LinearRegression().fit(X, Y_LAS)
+
+std_scaler = sklearn.preprocessing.StandardScaler()
+X = std_scaler.fit_transform(X)
+reg = Lasso().fit(X, Y_LAS)
 print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(X))))
 cpt=0
 print("Variable explicative beta associe (ne donne pas l importance d une variable)")
@@ -204,30 +208,29 @@ plt.legend(["true","pred"])
 plt.title("Comparison of prediction and real values of LAS")
 plt.show()
 
-
 nbvar=len(names)
 deactivatedscore=[]
 y_preds=[]
 #mesure efficacite de chaque var en les retirants
-for var in range(nbvar):
+#for var in range(nbvar):
+#
+#   Xdel=X
+#   Xdel=np.delete(Xdel,var,1)
+#	
+#    reg = LinearRegression().fit(Xdel, Y_LAS)
+#    print("On retire {}".format(names[var]))
 
-    Xdel=X
-    Xdel=np.delete(Xdel,var,1)
-
-    reg = LinearRegression().fit(Xdel, Y_LAS)
-    print("On retire {}".format(names[var]))
-
-    print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(Xdel))))
-    deactivatedscore.append(r2_score(Y_LAS, reg.predict(Xdel)))
-    y_preds.append(reg.predict(Xdel))
-    cpt=0
+#    print("LinearRegression score r2 {}".format(r2_score(Y_LAS, reg.predict(Xdel))))
+#    deactivatedscore.append(r2_score(Y_LAS, reg.predict(Xdel)))
+#    y_preds.append(reg.predict(Xdel))
+#    cpt=0
    # print("Variable explicative beta associe (ne donne pas l importance d une variable)")
    # for coef in reg.coef_[:len(names)]:
     #    if(cpt==nbvar):
     #        continue
         #print("{}  {} : {}".format(cpt,names[cpt],coef))
      #   cpt+=1
-    print("\n\n")
+#    print("\n\n")
 
 #mesure pour chaque langue de la distance a la valeur reelle
 y_preds=np.array(y_preds)
@@ -239,9 +242,6 @@ for i in range(nbvar):
     plt.subplot(11,2,i+1)
     plt.plot(langues,delta,'o')
 plt.show()
-
-
-
 
 #Xtrain=loadExplicativeVariable("../corpus_equilibre","train")
 
