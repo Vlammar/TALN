@@ -180,10 +180,14 @@ def getGovernerLinkLength(lines):
 			phrase_path_length.append(len(path))
 	return np.mean(phrase_path_length)
 
-def getCrossGov():
+
+def getCrossGov(lines):
 	phrases = np.array(reduceToPhrases(lines))
-	phrase_path_length = []
+	cross = 0	
 	for phrase in phrases:
 		govs = getPhraseGov(phrase)
-
-
+		for w1 in range(len(phrase)):
+			for w2 in range(w1+1,len(phrase)):
+				if govs[w1] < govs[w2]:
+					cross +=1
+	return cross
