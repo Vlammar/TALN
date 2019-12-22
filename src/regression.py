@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.model_selection import LeaveOneOut
 
 import sklearn
 import pandas as pd
@@ -171,13 +171,12 @@ def loadExplicativeVariable(path,tp):
 	return np.array(X),np.array(names)
 
 def regression(X,y):
-
 	std_scaler = sklearn.preprocessing.StandardScaler()
 	Xreg = std_scaler.fit_transform(X)
-	reg = Lasso(fit_intercept=True,alpha=0.5).fit(Xreg, y)
-#	reg = LinearRegression().fit(X,y)
-	print("Lasso score r2 {}".format(r2_score(y, reg.predict(Xreg))))
 
+	reg = Lasso(fit_intercept=True,alpha=0.5).fit(Xreg, y)
+
+#	reg = LinearRegression().fit(X,y)
 	return reg
 
 def plotReg(reg,X,y,Y):
@@ -216,6 +215,31 @@ def loadFeatures():
 			features.append(line)
 	return X,features
 
+def LOO(X,y):
+	predict = []
+
+	loo = LeaveOneOut()
+	loo.get_n_splits(X)
+
+	std_scaler = sklearn.preprocessing.StandardScaler()
+	X_reg = std_scaler.fit_transform(X)
+
+	X = np.array(X_reg)
+	y = np.array(y)
+
+	for train_index, test_index in loo.split(X):
+		X_train, X_test = X[train_index], X[test_index]
+
+		y_train = [ y[i] for i in train_index]
+		y_test = y[test_index[0]]
+
+		reg = regression(X_train,y_train)
+
+		predict.append(X_test @ reg.coef_ +reg.intercept_)
+
+	plt.plot(predict)
+	plt.plot(y)
+	plt.show()
 
 
 
@@ -241,18 +265,22 @@ def main():
 	X,f,names = computeAndSaveFeatures()
 	#X,names = loadFeatures()
 
-	#X,names=Xlin("../corpus_equilibre/","test")
-	reg = regression(X,Y_LAS)
-	print("Variable explicative beta associe ")
-	print(reg.coef_)
 
-	print("\nNom des variables utilises\n")
-	for i in range(len(reg.coef_)):
 
-		coef=reg.coef_[i]
-		if(coef>0):
-			print(names[i])
-	plotReg(reg,X,y,Y_LAS)
+	#reg = regression(X,Y_LAS)
+	#print("Variable explicative beta associe ")
+	#print(reg.coef_)
+
+
+	print(LOO(X,Y_UAS))
+
+#	print("\nNom des variables utilises\n")
+#	for i in range(len(reg.coef_)):
+
+#		coef=reg.coef_[i]
+#		if(coef>0):
+#			print(names[i])
+#	plotReg(reg,X,y,Y_LAS)
 
 	#nbvar=len(names)
 	#deactivatedscore=[]
@@ -288,5 +316,6 @@ def main():
 #		plotHist(delta)
 #		#plt.bar(range(len(langues)),delta,'o')
 #	plt.show()
+
 
 main()
