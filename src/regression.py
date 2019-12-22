@@ -164,8 +164,8 @@ def loadExplicativeVariable(path,tp):
 def regression(X,y):
 	std_scaler = sklearn.preprocessing.StandardScaler()
 	Xreg = std_scaler.fit_transform(X)
-	reg = Lasso(fit_intercept=True,alpha=1).fit(Xreg, y)
-#	reg = LinearRegression().fit(X,y)
+#	reg = Lasso(fit_intercept=True,alpha=1).fit(Xreg, y)
+	reg = LinearRegression().fit(X,y)
 	return reg
 
 def plotReg(reg,X,y,Y):
@@ -230,6 +230,11 @@ def LOO(X,y):
 	plt.plot(y)
 	plt.show()
 
+def testAllScores(X,y,feats):
+	for i in range(len(feats)):
+		r = regression(X[:,i].reshape(-1,1),y)
+		print(feats[i],r2_score(y,r.predict(X[:,i].reshape(-1,1))))
+
 def main():
 	#INIT dictionnaire avec valeur donnee dans le sujet
 	y={
@@ -256,7 +261,8 @@ def main():
 	#print("Variable explicative beta associe ")
 	#print(reg.coef_)
 
-	print(LOO(X,Y_UAS))
+#	print(LOO(X,Y_UAS))
+	testAllScores(X,Y_UAS,names)
 
 #	print("\nNom des variables utilises\n")
 #	for i in range(len(reg.coef_)):
