@@ -154,7 +154,7 @@ def loadExplicativeVariable(path,tp):
 		for i in range(len(p)):
 			if(i in Filter):
 				xlg.append(p[i])
-				names.append("prop"+str(i))
+				names.append(props[i])
 		X.append(xlg)
 
 
@@ -187,6 +187,8 @@ def plotReg(reg,X,y,Y):
 
 
 
+
+
 def main():
 	#INIT dictionnaire avec valeur donnee dans le sujet
 	y={
@@ -212,6 +214,7 @@ def main():
 	print("Variable explicative beta associe ")
 	print(reg.coef_)
 
+	print("\nNom des variables utilises\n")
 	for i in range(len(reg.coef_)):
 
 		coef=reg.coef_[i]
