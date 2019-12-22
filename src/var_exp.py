@@ -220,3 +220,7 @@ def getLanguageProp(lines):
 		res.append(len(list(dic.values())[i]))
 	#print(res)
 	return res
+
+def getPOSfreqLeaf():
+	for p in POS:
+		pass
