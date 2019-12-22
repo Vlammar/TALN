@@ -264,8 +264,8 @@ def main():
 	Y_LAS = [y[score][0] for score in y]
 	Y_UAS = [y[score][1] for score in y]
 
-	X,f,names = computeAndSaveFeatures()
-	#X,names = loadFeatures()
+	#X,f,names = computeAndSaveFeatures()
+	X,names = loadFeatures()
 
 
 
