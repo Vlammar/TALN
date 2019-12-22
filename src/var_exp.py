@@ -6,7 +6,7 @@ import numpy as np
 langues = ['ar','ca','es','fa','ga','hr','it','ko','no','ro','uk','zh','bg','cs','el','et','fi','he','hu','ja','lv','pl','ru','sv','ur','da','en','eu','fr','hi','id','nl','pt','sl','tr','vi']
 POS = ['X', 'PUNCT', 'NOUN', 'ADJ', 'VERB', 'NUM', '_', 'ADP', 'PRON', 'CCONJ', 'AUX', 'DET', 'ADV', 'PART', 'PROPN', 'SYM', 'SCONJ', 'INTJ']
 names={"ID":0,"FORM":1,"LEMMA":2,"POS":3,"EMPTY":4,"MORPHO":5,"GOV":6,"LABEL":7,"EMPTY_1":8,"EMPTY_2":9,"LANG":-1}
-
+props=['Foreign', 'Case', 'Definite', 'Number', 'Gender', 'Aspect', 'Mood', 'Person', 'VerbForm', 'Voice', 'NumForm', 'AdpType', 'PronType', 'NumValue', 'Polarity', 'Abbr', 'NumType', 'Tense', 'PunctType', 'AdvType', 'Poss', 'PunctSide', 'Number[psor]', 'PrepCase', 'Polite', 'Reflex', 'Degree', 'Form', 'NounType', 'PartType', 'PrepForm', 'Dialect', 'Animacy', 'Gender[psor]', 'Clitic', 'Strength', 'Variant', 'Position', 'NameType', 'Style', 'Hyph', 'Animacy[gram]', 'ConjType', 'Connegative', 'Person[psor]', 'PartForm', 'InfForm', 'Derivation', 'Typo', 'HebBinyan', 'VerbType', 'HebSource', 'Prefix', 'HebExistential', 'Xtra', 'Number[psed]', 'Evident', 'Echo', 'Number[abs]', 'Person[abs]', 'Number[erg]', 'Person[erg]', 'Number[dat]', 'Person[dat]', 'Gender[erg]', 'Polite[erg]', 'Polite[abs]', 'Gender[dat]', 'Polite[dat]', 'Subcat']
 
 #=====================================================================
 #							UTILS
@@ -84,15 +84,13 @@ def getMeanWordLength(lines):
 	words=[]
 	for word in lines:
 		words.append(len(str(word[1])))
-		#print(word[1])
 	return np.mean(words)
+
 def getMeanLemmaLength(lines):
 	words=[]
 	for word in lines:
 		words.append(len(str(word[2])))
-	   # print(word[1])
 	return np.mean(words)
-
 
 def mean_phrase_len(lines):
 	phrases = np.array(reduceToPhrases(lines))
@@ -105,7 +103,6 @@ def nbWordUsed(lines):
 	words={}
 	for w in lines:
 		words[w[1]]=1
-
 	return len(words.keys())
 
 def nbLemmaUsed(lines):
@@ -136,16 +133,12 @@ def wordQuartile(lines):
 	words=[]
 	for word in lines:
 		words.append(len(str(word[1])))
-
-
 	return [np.percentile(words, 25, axis=0),np.percentile(words, 50, axis=0),np.percentile(words, 75, axis=0)]
 
 def lemmaQuartile(lines):
 	words=[]
 	for word in lines:
 		words.append(len(str(word[2])))
-
-
 	return [np.percentile(words, 25, axis=0),np.percentile(words, 50, axis=0),np.percentile(words, 75, axis=0)]
 
 def sentenceQuartile(lines):
@@ -153,7 +146,6 @@ def sentenceQuartile(lines):
 	lengths= []
 	for phrase in phrases:
 		lengths.append(len(phrase))
-
 	return [np.percentile(lengths, 25, axis=0),np.percentile(lengths, 50, axis=0),np.percentile(lengths, 75, axis=0)]
 
 def goUpLeaves(leaves,governors):
@@ -168,13 +160,13 @@ def goUpLeaves(leaves,governors):
 			path.append(current_pos)
 		paths.append(path)
 	return paths
-	
+
 def getGovernerLinkLength(lines):
 	phrases = np.array(reduceToPhrases(lines))
 	phrase_path_length = []
 	for phrase in phrases:
 		govs = getPhraseGov(phrase)
-		#on cherche toutes les feuilles : toutes celles pas prÃ©sentes dans la table des gouvs
+		#on cherche toutes les feuilles : toutes celles pas présentes dans la table des gouvs
 		leaves = [ i for i in range(1,len(govs)) if i not in govs]
 		for path in goUpLeaves(leaves,govs):
 			phrase_path_length.append(len(path))
@@ -183,7 +175,7 @@ def getGovernerLinkLength(lines):
 
 def getCrossGov(lines):
 	phrases = np.array(reduceToPhrases(lines))
-	cross = 0	
+	cross = 0
 	for phrase in phrases:
 		govs = getPhraseGov(phrase)
 		for w1 in range(len(phrase)):
@@ -191,3 +183,40 @@ def getCrossGov(lines):
 				if govs[w1] < govs[w2]:
 					cross +=1
 	return cross
+
+def getProperties(lines):
+	dic={}
+	for line in lines:
+		s=line[5]
+		if(s=="_"):
+			continue
+		types=s.split("|")
+		for t in types:
+			ls=t.split("=")
+			dic[ls[0]]=1
+
+
+	return list(dic.keys())
+
+def getLanguageProp(lines):
+	dic={}
+
+	for prop in props:
+		dic[prop]=[]
+
+	for line in lines:
+		s=line[5]
+		if(s=="_"):
+			continue
+		types=s.split("|")
+		for t in types:
+			ls=t.split("=")
+			if(not ls[1]in dic[ls[0]]):
+				dic[ls[0]].append(ls[1])
+
+	res=[]
+	#print(dic)
+	for i in range(len(props)):
+		res.append(len(list(dic.values())[i]))
+	#print(res)
+	return res
