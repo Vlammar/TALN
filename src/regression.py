@@ -174,7 +174,7 @@ def regression(X,y):
 	std_scaler = sklearn.preprocessing.StandardScaler()
 	Xreg = std_scaler.fit_transform(X)
 
-	reg = Lasso(fit_intercept=True,alpha=0.5).fit(Xreg, y)
+	reg = Lasso(fit_intercept=True,alpha=1).fit(Xreg, y)
 
 #	reg = LinearRegression().fit(X,y)
 	return reg
@@ -242,7 +242,6 @@ def LOO(X,y):
 	plt.show()
 
 
-
 def main():
 	#INIT dictionnaire avec valeur donnee dans le sujet
 	y={
@@ -273,6 +272,7 @@ def main():
 
 
 	print(LOO(X,Y_UAS))
+
 
 #	print("\nNom des variables utilises\n")
 #	for i in range(len(reg.coef_)):
