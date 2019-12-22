@@ -165,7 +165,7 @@ def regression(X,y):
 
 	std_scaler = sklearn.preprocessing.StandardScaler()
 	Xreg = std_scaler.fit_transform(X)
-	reg = Lasso(fit_intercept=True,alpha=0.1).fit(Xreg, y)
+	reg = Lasso(fit_intercept=True,alpha=.5).fit(Xreg, y)
 #	reg = LinearRegression().fit(X,y)
 	print("Lasso score r2 {}".format(r2_score(y, reg.predict(Xreg))))
 
@@ -187,6 +187,25 @@ def plotReg(reg,X,y,Y):
 
 
 
+def computeAndSaveFeatures():
+	X,features = X,names=loadExplicativeVariable("../corpus_equilibre","test")
+	np.savetxt("X.in",np.array(X))
+	
+	with open("feats.in", 'w') as output:
+		for row in features:
+		    output.write(str(row) + '\n')
+
+	return X,features
+
+def loadFeatures():
+	X=np.loadtxt("X.in")
+	features = []
+	with open("feats.in", 'r') as input_feats:
+		line = input_feats.readline()
+		while line :
+			line = input_feats.readline()
+			features.append(line)
+	return X,features
 
 
 def main():
@@ -203,12 +222,13 @@ def main():
 		"eu":(58.80, 68.78),	"nl":(57.44, 68.43),	"ko":(53.12, 63.21),	"tr":(47.28, 55.20)
 	}
 
+
 	#construction des Y
 	Y_LAS = [y[score][0] for score in y]
 	Y_UAS = [y[score][1] for score in y]
 
-    #chargement des variables a partir du corpus
-	X,names=loadExplicativeVariable("../corpus_equilibre","test")
+#	X,f = computeAndSaveFeatures()
+	X,names = loadFeatures()
 
 	reg = regression(X,Y_LAS)
 	print("Variable explicative beta associe ")
@@ -256,6 +276,5 @@ def main():
 #		plotHist(delta)
 #		#plt.bar(range(len(langues)),delta,'o')
 #	plt.show()
-
 
 main()
