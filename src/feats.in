@@ -1,0 +1,108 @@
+meanDist
+log meanDist
+mean_phrase_len
+log mean_phrase_len
+getMeanWordLength
+log getMeanWordLength
+getMeanLemmaLength
+log getMeanLemmaLength
+nbWordUsed
+log nbWordUsed
+nbLemmaUsed
+log nbLemmaUsed
+nbCharUsed
+log nbCharUsed
+POSambiguity
+log POSambiguity
+GovLinkLength
+log GovLinkLength
+CrossGov
+log CrossGov
+wordQuartile1
+wordQuartile2
+wordQuartile3
+log wordQuartile1
+log wordQuartile2
+log wordQuartile3
+lQuartile1
+lQuartile2
+lQuartile3
+log lQuartile1
+log lQuartile2
+log lQuartile3
+sQuartile1
+sQuartile2
+sQuartile3
+log sQuartile1
+log sQuartile2
+log sQuartile3
+Foreign
+Case
+Definite
+Number
+Gender
+Aspect
+Mood
+Person
+VerbForm
+Voice
+NumForm
+AdpType
+PronType
+NumValue
+Polarity
+Abbr
+NumType
+Tense
+PunctType
+AdvType
+Poss
+PunctSide
+Number[psor]
+PrepCase
+Polite
+Reflex
+Degree
+Form
+NounType
+PartType
+PrepForm
+Dialect
+Animacy
+Gender[psor]
+Clitic
+Strength
+Variant
+Position
+NameType
+Style
+Hyph
+Animacy[gram]
+ConjType
+Connegative
+Person[psor]
+PartForm
+InfForm
+Derivation
+Typo
+HebBinyan
+VerbType
+HebSource
+Prefix
+HebExistential
+Xtra
+Number[psed]
+Evident
+Echo
+Number[abs]
+Person[abs]
+Number[erg]
+Person[erg]
+Number[dat]
+Person[dat]
+Gender[erg]
+Polite[erg]
+Polite[abs]
+Gender[dat]
+Polite[dat]
+Subcat
